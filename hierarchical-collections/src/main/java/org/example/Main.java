@@ -4,95 +4,95 @@ package org.example;
 public class Main {
     public static void main(String[] args) {
 
-//        /**
-//         * W pakiecie model utwórz klasę o nazwie Geography,
-//         * z prywatnymi polami:
-//         *  - int id;
-//         *  - String name;
-//         *  - String type;
-//         *  - String code;
-//         *  - Integer parentId;
-//         *
-//         *  Dodaj gettery i settery do ww. pól
-//         */
-//
+        /**
+         * W pakiecie model utwórz klasę o nazwie Geography,
+         * z prywatnymi polami:
+         *  - int id;
+         *  - String name;
+         *  - String type;
+         *  - String code;
+         *  - Integer parentId;
+         *
+         *  Dodaj gettery i settery do ww. pól
+         */
+
 //        Geography sample = new Geography();
 //        sample.setId(0);
 //        sample.setCode("ab");
 //        sample.setName("xyz");
 //        sample.setParentId(null);
 //        sample.setParentId(-1);
-//
-//        /**
-//         * W klasie SampleGeographiesData
-//         * posiadzasz na sztywno wbite dane geograficzne.
-//         * Chciałbym móc te dane zapisane w formacie String
-//         * przekonwertować na obiekty geograficzne wcześniej utworzonej klasy.
-//         *
-//         * W tym celu utwórz nowy interfejs generyczny o nazwie IParse<TResult>
-//         * w pakiecie 'tools.abstractions'
-//         */
-//
+
+        /**
+         * W klasie SampleGeographiesData
+         * posiadzasz na sztywno wbite dane geograficzne.
+         * Chciałbym móc te dane zapisane w formacie String
+         * przekonwertować na obiekty geograficzne wcześniej utworzonej klasy.
+         *
+         * W tym celu utwórz nowy interfejs generyczny o nazwie IParse<TResult>
+         * w pakiecie 'tools.abstractions'
+         */
+
 //        IParse<Geography> geographyParser;
-//
-//        /**
-//         * w pakiecie 'tools.geographies'
-//         * dodaj implementację tego interfejsu,
-//         * jako klasa o nazwie GeographyParser,
-//         * gdzie jako parametr typu użyjemy klasę Geography
-//         */
-//
+
+        /**
+         * w pakiecie 'tools.geographies'
+         * dodaj implementację tego interfejsu,
+         * jako klasa o nazwie GeographyParser,
+         * gdzie jako parametr typu użyjemy klasę Geography
+         */
+
 //        geographyParser = new GeographyParser();
-//
-//        /**
-//         * W interfejsie IParse<TResult>
-//         * zadeklaruj metodę parse,
-//         * a w klasie GeographyParser dostarcz jej implementacji.
-//         *
-//         * Teraz chcemy z listy "String'ów",
-//         * otrzymać listę geografii.
-//         */
+
+        /**
+         * W interfejsie IParse<TResult>
+         * zadeklaruj metodę parse,
+         * a w klasie GeographyParser dostarcz jej implementacji.
+         *
+         * Teraz chcemy z listy "String'ów",
+         * otrzymać listę geografii.
+         */
 //        List<Geography> geographies = new ArrayList<>();
 //        for (String line :
 //                SampleGeographiesData.data) {
 //            geographies.add(geographyParser.parse(line));
 //        }
-//
-//        /**
-//         * mam nadzieję, że zauważyłeś, że obiekty typu Geography
-//         * mogą posiadać hierarchiczną strukturę,
-//         * tzn. rodzic <--> dzieci
-//         * tj.
-//         * - world jest rodzicem dla regionów,
-//         * - regiony dla subregionów lub państw
-//         * - i inne
-//         * Oczywiście geografie są tylko jednym przykładem takich struktur,
-//         * które można dosyć często spotkaĆ.
-//         *
-//         * Aby zgeneralizować takie struktury przygotujemy
-//         * interfejs generyczny o nazwie 'IHaveHierarchicalStructure<TItem>'
-//         * (pakiet 'model.abstractions').
-//         * Niech klasa Geography implementuje ten interfejs
-//         */
-//
+
+        /**
+         * mam nadzieję, że zauważyłeś, że obiekty typu Geography
+         * mogą posiadać hierarchiczną strukturę,
+         * tzn. rodzic <--> dzieci
+         * tj.
+         * - world jest rodzicem dla regionów,
+         * - regiony dla subregionów lub państw
+         * - i inne
+         * Oczywiście geografie są tylko jednym przykładem takich struktur,
+         * które można dosyć często spotkaĆ.
+         *
+         * Aby zgeneralizować takie struktury przygotujemy
+         * interfejs generyczny o nazwie 'IHaveHierarchicalStructure<TItem>'
+         * (pakiet 'model.abstractions').
+         * Niech klasa Geography implementuje ten interfejs
+         */
+
 //        IHaveHierarchicalStructure<Geography> geography = new Geography();
-//
-//        /**
-//         * Niech interfejs posiada poniższe metody
-//         * (Pamiętaj o wykorzystaniu parametrów typów w deklaracjach metod):
-//         */
-//
+
+        /**
+         * Niech interfejs posiada poniższe metody
+         * (Pamiętaj o wykorzystaniu parametrów typów w deklaracjach metod):
+         */
+
 //        geography.setParent(new Geography());
 //        List<Geography> children = geography.getChildren();
 //        Geography parent = geography.getParent();
 //        int id = geography.getId();
 //        int parentId = geography.getParentId();
-//
-//        /**
-//         * Sprawdźmy czy generyczność będzie zachowana także dla innego typu obiektów.
-//         * Odkomentuj klasę Person, która znajduje się na dole tego pliku.
-//         */
-//
+
+        /**
+         * Sprawdźmy czy generyczność będzie zachowana także dla innego typu obiektów.
+         * Odkomentuj klasę Person, która znajduje się na dole tego pliku.
+         */
+
 //        IHaveHierarchicalStructure<Person> person = new Person();
 //
 //        person.setParent(new Person());
@@ -101,28 +101,28 @@ public class Main {
 //        int personId = person.getId();
 //        int fatherId = person.getParentId();
 //
-//        /**
-//         * Super, jak dotąd idziesz jak burza ;')
-//         * w pakiecie 'tools'
-//         * dodaj nową klasę, której zadaniem będzie
-//         * zbudowanie hierarchi z kolekcji elementów.
-//         *
-//         * Niech klasa nazywa się HierarchyBuilder<TItem>,
-//         * a parametr typu będzie ograniczał się tylko do klas
-//         * implementujących interfejs
-//         * IHaveHierarchicalStructure<TItem>
-//         */
-//
+        /**
+         * Super, jak dotąd idziesz jak burza ;')
+         * w pakiecie 'tools'
+         * dodaj nową klasę, której zadaniem będzie
+         * zbudowanie hierarchi z kolekcji elementów.
+         *
+         * Niech klasa nazywa się HierarchyBuilder<TItem>,
+         * a parametr typu będzie ograniczał się tylko do klas
+         * implementujących interfejs
+         * IHaveHierarchicalStructure<TItem>
+         */
+
 //        HierarchyBuilder<Geography> geographyHierarchyBuilder = new HierarchyBuilder<>();
 //
 //        geographyHierarchyBuilder.setElements(geographies); //Niech builder przyjmie kolekcje geografii wygenerowany wcześniej
 //        geographyHierarchyBuilder.buildHierarchy(); // niech zbuduje hierarchie
 //        Geography rootGeography = geographyHierarchyBuilder.getRootElement();// niech zwróci rodzica wszystkichj geografii, czyli 'world'
-//
-//        /**
-//         * Sprawdzmy czy klasa rzeczywiście zachowuje generyczność
-//         */
-//
+
+        /**
+         * Sprawdzmy czy klasa rzeczywiście zachowuje generyczność
+         */
+
 //        HierarchyBuilder<Person> personHierarchyBuilder = new HierarchyBuilder<>();
 //
 //        personHierarchyBuilder.setElements(Person.sample);
@@ -133,19 +133,19 @@ public class Main {
 //            System.out.println("Hierarchia jest chyba, źle zbudowana :(");
 //            return;
 //        }
-//
-//        /**
-//         * Super!
-//         * Pewnie sam nie wierzyłeś, że dojdziesz aż tutaj.
-//         *
-//         * Przed Tobą ostatni krok, a mianowicie w pakiecie 'tools'
-//         * utwórz klasę o nazwie Hierarchy<TItem>, dzięki której będziesz mógł
-//         * nawigować po hierarchi, znając id elementu
-//         *
-//         * Parametr Typu powinien być klasą,
-//         * która implementuje interfejs IHaveHierarchicalStructure<TItem>
-//         */
-//
+
+        /**
+         * Super!
+         * Pewnie sam nie wierzyłeś, że dojdziesz aż tutaj.
+         *
+         * Przed Tobą ostatni krok, a mianowicie w pakiecie 'tools'
+         * utwórz klasę o nazwie Hierarchy<TItem>, dzięki której będziesz mógł
+         * nawigować po hierarchi, znając id elementu
+         *
+         * Parametr Typu powinien być klasą,
+         * która implementuje interfejs IHaveHierarchicalStructure<TItem>
+         */
+
 //        Hierarchy<Geography> geoHierarchy = new Hierarchy<>();
 //        geoHierarchy.setRootElement(rootGeography);
 //        Geography nilphamariZila = geoHierarchy.findElementById(555);
@@ -154,10 +154,11 @@ public class Main {
 //            System.out.println("Chyba nie znalazł dobrego elementu :(");
 //            return;
 //        }
-//
-//        /**
-//         * Sprawdźmy jeszcze generyczność
-//         */
+
+        /**
+         * Sprawdźmy jeszcze generyczność
+         */
+
 //        Hierarchy<Person> personHierarchy = new Hierarchy<>();
 //        personHierarchy.setRootElement(rootPerson);
 //        Person p4 = personHierarchy.findElementById(3);
