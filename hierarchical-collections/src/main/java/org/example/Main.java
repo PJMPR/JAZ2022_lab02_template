@@ -60,14 +60,14 @@ public class Main {
 //
 //        /**
 //         * mam nadzieję, że zauważyłeś, że obiekty typu Geography
-//         * mogę posiadać hierarchiczną strukturę,
+//         * mogą posiadać hierarchiczną strukturę,
 //         * tzn. rodzic <--> dzieci
 //         * tj.
 //         * - world jest rodzicem dla regionów,
 //         * - regiony dla subregionów lub państw
 //         * - i inne
 //         * Oczywiście geografie są tylko jednym przykładem takich struktur,
-//         * które można dosyć często.
+//         * które można dosyć często spotkaĆ.
 //         *
 //         * Aby zgeneralizować takie struktury przygotujemy
 //         * interfejs generyczny o nazwie 'IHaveHierarchicalStructure<TItem>'
@@ -166,7 +166,7 @@ public class Main {
 //            return;
 //        }
 //
-//        System.out.println("Udało się !! Wszystko działą :)");
+//        System.out.println("Udało się !! Wszystko działa :)");
     }
 }
 
