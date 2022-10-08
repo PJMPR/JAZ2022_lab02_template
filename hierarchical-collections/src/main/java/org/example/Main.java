@@ -50,7 +50,7 @@ public class Main {
 //         * a w klasie GeographyParser dostarcz jej implementacji.
 //         *
 //         * Teraz chcemy z listy "String'ów",
-//         * chce otrzymać listę geografii.
+//         * otrzymać listę geografii.
 //         */
 //        List<Geography> geographies = new ArrayList<>();
 //        for (String line :
