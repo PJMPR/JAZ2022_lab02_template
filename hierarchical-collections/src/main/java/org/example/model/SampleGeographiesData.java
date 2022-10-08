@@ -5,6 +5,7 @@ import java.util.List;
 public class SampleGeographiesData {
 
     public static List<String> data = List.of(
+            /*  id; typ regionu; nazwa regionu; kod regionu; id rodzica  */
             "1;World;World;;NULL                                                                                                    ",
             "2;County;Iraq-Kurdistan;;115                                                                                           ",
             "10;Country;Afghanistan;AF;4552                                                                                         ",
