@@ -86,7 +86,7 @@ public class Main {
 //        List<Geography> children = geography.getChildren();
 //        Geography parent = geography.getParent();
 //        int id = geography.getId();
-//        int parentId = geography.getParentId();
+//        Integer parentId = geography.getParentId();
 
         /**
          * Sprawdźmy czy generyczność będzie zachowana także dla innego typu obiektów.
@@ -99,7 +99,7 @@ public class Main {
 //        List<Person> sons = person.getChildren();
 //        Person father = person.getParent();
 //        int personId = person.getId();
-//        int fatherId = person.getParentId();
+//        Integer fatherId = person.getParentId();
 //
         /**
          * Super, jak dotąd idziesz jak burza ;')
