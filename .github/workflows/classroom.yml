@@ -1,4 +1,4 @@
-name: Grade segments (Gradle)
+name: GitHub Classroom Autograding
 
 on:
   push:
@@ -6,91 +6,169 @@ on:
   pull_request:
     branches: ["**"]
 
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
 jobs:
-  grade:
+  autograding:
     runs-on: ubuntu-latest
 
-    # Jeśli projekt leży w podkatalogu, podaj go tu (np. PROJECT_DIR: subdir)
     env:
       PROJECT_DIR: hierarchical-collections
-      # FQCN klasy z main(); używane w fallbacku gdy nie ma pluginu 'application'
       MAIN_CLASS: org.example.Main
-      MAX_SEGMENTS: "20"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # (opcjonalnie) weryfikacja wrappera
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v3
 
-      - name: Setup Java 17 (Temurin) + Gradle cache
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle   # <<-- kluczowe: żadnego Mavena, żadnego settings.xml
 
-      - name: Make gradlew executable
-        run: chmod +x "$PROJECT_DIR/gradlew"
+      - name: Setup Gradle (cache)
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Build (Gradle)
+      - name: Build
         run: |
           cd "$PROJECT_DIR"
+          chmod +x ./gradlew
           ./gradlew -q clean build -x test
-      # Spróbuj najpierw 'gradle run' (wymaga pluginu 'application' i mainClass),
-      # a jeśli nie ma takiej konfiguracji, uruchom bezpośrednio 'java -cp ...'
-      - name: Run Main and capture output
-        id: runmain
+      - name: Run once and save output
+        id: run-once
         shell: bash
         run: |
           set -e
           cd "$PROJECT_DIR"
           OUT=../program_output.txt
           if ./gradlew -q tasks --all | grep -qE '(^|:)run\s'; then
-            # Jeśli macie plugin 'application' i mainClass, to zadziała:
             ./gradlew -q run | tee "$OUT"
           else
-            # Fallback bez pluginu 'application'
             CP="build/classes/java/main"
-            if [ ! -d "$CP" ]; then
-              echo "Nie znaleziono $CP (czy projekt jest w $PROJECT_DIR i zbudował się poprawnie?)"
-              exit 1
-            fi
+            [ -d "$CP" ] || { echo "Brak $CP – czy build przeszedł?"; exit 1; }
             java -cp "$CP" "$MAIN_CLASS" | tee "$OUT"
           fi
           echo "OUTPUT_PATH=$(realpath $OUT)" >> $GITHUB_OUTPUT
-      - name: Score (count passed segments)
-        id: score
-        shell: bash
-        run: |
-          set -e
-          cd "$PROJECT_DIR"/..
-          OUT="program_output.txt"
-          NUMBERS=$(grep -oE '\[SEGMENT-([0-9]+)-OK\]' "$OUT" | sed -E 's/.*SEGMENT-([0-9]+)-OK.*/\1/' | sort -n | uniq || true)
-          POINTS=$(printf "%s\n" "$NUMBERS" | grep -c '[0-9]' || true)
-          echo "### Wynik uruchomienia\n" >> $GITHUB_STEP_SUMMARY
-          echo "| Segment | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|---:|:---|" >> $GITHUB_STEP_SUMMARY
-          for i in $(seq 1 ${MAX_SEGMENTS}); do
-            if echo "$NUMBERS" | grep -qx "$i"; then
-              echo "| $i | ✅ OK |" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "| $i | ⛔️ brak |" >> $GITHUB_STEP_SUMMARY
-            fi
-          done
-          echo -e "\n**Suma punktów:** $POINTS\n" >> $GITHUB_STEP_SUMMARY
-          echo "points=$POINTS" >> $GITHUB_OUTPUT
-      - name: Upload raw output (artifact)
-        uses: actions/upload-artifact@v4
+      # --- 20 testów po 1 pkt każdy (sprawdzenie markerów w program_output.txt) ---
+      - name: SEGMENT 1
+        id: seg-1
+        uses: classroom-resources/autograding-command-grader@v1
         with:
-          name: program-output
-          path: program_output.txt
-          if-no-files-found: ignore
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
 
-      - name: Fail when zero points (optional)
-        if: ${{ steps.score.outputs.points == '0' }}
-        run: |
-          echo "Brak zaliczonych segmentów" >> $GITHUB_STEP_SUMMARY
-          exit 1
+      - name: SEGMENT 2
+        id: seg-2
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 3
+        id: seg-3
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 4
+        id: seg-4
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 5
+        id: seg-5
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 6
+        id: seg-6
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 7
+        id: seg-7
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 8
+        id: seg-8
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 9
+        id: seg-9
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 10
+        id: seg-10
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      - name: SEGMENT 11
+        id: seg-11
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Segment 1"
+          command: bash -lc "grep -q '\\[SEGMENT-1-OK\\]' program_output.txt"
+          timeout: 5
+          max-score: 1
+
+      # Reporter: to jest kluczowy krok synchronizujący punkty z Classroom
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          SEG-1_RESULTS:  ${{ steps.seg-1.outputs.result }}
+          SEG-2_RESULTS:  ${{ steps.seg-2.outputs.result }}
+          SEG-3_RESULTS:  ${{ steps.seg-3.outputs.result }}
+          SEG-4_RESULTS:  ${{ steps.seg-4.outputs.result }}
+          SEG-5_RESULTS:  ${{ steps.seg-5.outputs.result }}
+          SEG-6_RESULTS:  ${{ steps.seg-6.outputs.result }}
+          SEG-7_RESULTS:  ${{ steps.seg-7.outputs.result }}
+          SEG-8_RESULTS:  ${{ steps.seg-8.outputs.result }}
+          SEG-9_RESULTS:  ${{ steps.seg-9.outputs.result }}
+          SEG-10_RESULTS: ${{ steps.seg-10.outputs.result }}
+          SEG-11_RESULTS: ${{ steps.seg-11.outputs.result }}
+        with:
+          runners: seg-1,seg-2,seg-3,seg-4,seg-5,seg-6,seg-7,seg-8,seg-9,seg-10,seg-11
