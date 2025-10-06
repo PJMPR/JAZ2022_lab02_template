@@ -1,88 +1,75 @@
-name: Grade segments
+name: Grade segments (Gradle)
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
   pull_request:
-    branches: [ "**" ]
+    branches: ["**"]
 
 jobs:
   grade:
     runs-on: ubuntu-latest
 
+    # Jeśli projekt leży w podkatalogu, podaj go tu (np. PROJECT_DIR: subdir)
     env:
-      # DOSTOSUJ w razie potrzeby:
       PROJECT_DIR: hierarchical-collections
-      MAIN_CLASS: pl.pjatk.jaz.Main
-      # Maksymalna liczba segmentów (do tabeli w podsumowaniu):
-      MAX_SEGMENTS: "10"
+      # FQCN klasy z main(); używane w fallbacku gdy nie ma pluginu 'application'
+      MAIN_CLASS: org.example.Main
+      MAX_SEGMENTS: "20"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java 17 (Temurin) with cache
+      # (opcjonalnie) weryfikacja wrappera
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Setup Java 17 (Temurin) + Gradle cache
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-          cache: "maven"   # automatycznie przełączy na "gradle" jeśli użyjemy Gradle'a
+          cache: gradle   # <<-- kluczowe: żadnego Mavena, żadnego settings.xml
 
-      - name: Detect build tool
-        id: bt
+      - name: Make gradlew executable
+        run: chmod +x "$PROJECT_DIR/gradlew"
+
+      - name: Build (Gradle)
         run: |
           cd "$PROJECT_DIR"
-          if [ -f "mvnw" ] || [ -f "pom.xml" ]; then
-            echo "tool=maven" >> $GITHUB_OUTPUT
-          elif [ -f "gradlew" ] || [ -f "build.gradle" ] || [ -f "build.gradle.kts" ]; then
-            echo "tool=gradle" >> $GITHUB_OUTPUT
-          else
-            echo "Nie wykryto Mavena ani Gradle'a"; exit 1
-          fi
-
-      - name: Build
-        run: |
-          set -e
-          cd "$PROJECT_DIR"
-          if [ "${{ steps.bt.outputs.tool }}" = "maven" ]; then
-            # mvnw jeśli jest, w przeciwnym razie mvn
-            if [ -f "./mvnw" ]; then MVN=./mvnw; else MVN=mvn; fi
-            $MVN -q -DskipTests package
-            # wykrycie classpath (target/classes + zależności z lokalnego repo, gdy potrzebne)
-            echo "CP=target/classes$(printf :$(find target/dependency -name '*.jar' 2>/dev/null) | tr -d '\n')" >> $GITHUB_ENV
-          else
-            if [ -f "./gradlew" ]; then GRAD=./gradlew; else GRAD=gradle; fi
-            $GRAD -q clean build -x test
-            # standardowy classpath Gradle (build/classes/java/main + jars z build/libs gdy fat-jar nie powstał)
-            echo "CP=build/classes/java/main$(printf :$(ls build/libs/*.jar 2>/dev/null) | tr -d '\n')" >> $GITHUB_ENV
-          fi
-
+          ./gradlew -q clean build -x test
+      # Spróbuj najpierw 'gradle run' (wymaga pluginu 'application' i mainClass),
+      # a jeśli nie ma takiej konfiguracji, uruchom bezpośrednio 'java -cp ...'
       - name: Run Main and capture output
         id: runmain
+        shell: bash
         run: |
           set -e
           cd "$PROJECT_DIR"
-          # Spróbuj uruchomić po FQCN:
-          if [ -n "$CP" ]; then
-            java -cp "$CP" "$MAIN_CLASS" | tee ../program_output.txt
+          OUT=../program_output.txt
+          if ./gradlew -q tasks --all | grep -qE '(^|:)run\s'; then
+            # Jeśli macie plugin 'application' i mainClass, to zadziała:
+            ./gradlew -q run | tee "$OUT"
           else
-            # awaryjnie spróbuj uruchomienia przez Maven exec (jeśli skonfigurowany)
-            if [ -f "./mvnw" ]; then MVN=./mvnw; else MVN=mvn; fi
-            $MVN -q -Dexec.mainClass="$MAIN_CLASS" exec:java | tee ../program_output.txt
+            # Fallback bez pluginu 'application'
+            CP="build/classes/java/main"
+            if [ ! -d "$CP" ]; then
+              echo "Nie znaleziono $CP (czy projekt jest w $PROJECT_DIR i zbudował się poprawnie?)"
+              exit 1
+            fi
+            java -cp "$CP" "$MAIN_CLASS" | tee "$OUT"
           fi
-          echo "OUTPUT_PATH=$(realpath ../program_output.txt)" >> $GITHUB_OUTPUT
-
+          echo "OUTPUT_PATH=$(realpath $OUT)" >> $GITHUB_OUTPUT
       - name: Score (count passed segments)
         id: score
+        shell: bash
         run: |
           set -e
-          OUT="program_output.txt"
           cd "$PROJECT_DIR"/..
-          # Wyciągnij unikalne numery segmentów z markerów [SEGMENT-x-OK]
-          NUMBERS=$(grep -oE '\[SEGMENT-([0-9]+)-OK\]' "$OUT" | sed -E 's/.*SEGMENT-([0-9]+)-OK.*/\1/' | sort -n | uniq)
+          OUT="program_output.txt"
+          NUMBERS=$(grep -oE '\[SEGMENT-([0-9]+)-OK\]' "$OUT" | sed -E 's/.*SEGMENT-([0-9]+)-OK.*/\1/' | sort -n | uniq || true)
           POINTS=$(printf "%s\n" "$NUMBERS" | grep -c '[0-9]' || true)
-
-          # Zbuduj tabelę do podsumowania
           echo "### Wynik uruchomienia\n" >> $GITHUB_STEP_SUMMARY
           echo "| Segment | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|---:|:---|" >> $GITHUB_STEP_SUMMARY
@@ -94,9 +81,7 @@ jobs:
             fi
           done
           echo -e "\n**Suma punktów:** $POINTS\n" >> $GITHUB_STEP_SUMMARY
-
           echo "points=$POINTS" >> $GITHUB_OUTPUT
-
       - name: Upload raw output (artifact)
         uses: actions/upload-artifact@v4
         with:
@@ -104,8 +89,7 @@ jobs:
           path: program_output.txt
           if-no-files-found: ignore
 
-      # (opcjonalnie) ustaw status joba na failed, jeżeli 0 punktów
-      - name: Fail when zero points
+      - name: Fail when zero points (optional)
         if: ${{ steps.score.outputs.points == '0' }}
         run: |
           echo "Brak zaliczonych segmentów" >> $GITHUB_STEP_SUMMARY
