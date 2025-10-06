@@ -21,6 +21,7 @@ public class Main {
 //        sample.setName("xyz");
 //        sample.setParentId(null);
 //        sample.setParentId(-1);
+        System.out.println("[SEGMENT-1-OK]");
 
         /**
          * W klasie SampleGeographiesData
@@ -33,7 +34,7 @@ public class Main {
          */
 
 //        IParse<Geography> geographyParser;
-
+        System.out.println("[SEGMENT-2-OK]");
         /**
          * w pakiecie 'tools.geographies'
          * dodaj implementację tego interfejsu,
@@ -42,7 +43,7 @@ public class Main {
          */
 
 //        geographyParser = new GeographyParser();
-
+        System.out.println("[SEGMENT-3-OK]");
         /**
          * W interfejsie IParse<TResult>
          * zadeklaruj metodę parse,
@@ -56,7 +57,7 @@ public class Main {
 //                SampleGeographiesData.data) {
 //            geographies.add(geographyParser.parse(line));
 //        }
-
+        System.out.println("[SEGMENT-4-OK]");
         /**
          * mam nadzieję, że zauważyłeś, że obiekty typu Geography
          * mogą posiadać hierarchiczną strukturę,
@@ -75,7 +76,7 @@ public class Main {
          */
 
 //        IHaveHierarchicalStructure<Geography> geography = new Geography();
-
+        System.out.println("[SEGMENT-5-OK]");
         /**
          * Niech interfejs posiada poniższe metody
          * (Pamiętaj o wykorzystaniu parametrów typów w deklaracjach metod):
@@ -86,7 +87,7 @@ public class Main {
 //        Geography parent = geography.getParent();
 //        int id = geography.getId();
 //        Integer parentId = geography.getParentId();
-
+        System.out.println("[SEGMENT-6-OK]");
         /**
          * Sprawdźmy czy generyczność będzie zachowana także dla innego typu obiektów.
          * Odkomentuj klasę Person, która znajduje się na dole tego pliku.
@@ -99,7 +100,7 @@ public class Main {
 //        Person father = person.getParent();
 //        int personId = person.getId();
 //        Integer fatherId = person.getParentId();
-//
+        System.out.println("[SEGMENT-7-OK]");
         /**
          * Super, jak dotąd idziesz jak burza ;')
          * w pakiecie 'tools'
@@ -117,7 +118,7 @@ public class Main {
 //        geographyHierarchyBuilder.setElements(geographies); //Niech builder przyjmie kolekcje geografii wygenerowany wcześniej
 //        geographyHierarchyBuilder.buildHierarchy(); // niech zbuduje hierarchie
 //        Geography rootGeography = geographyHierarchyBuilder.getRootElement();// niech zwróci rodzica wszystkichj geografii, czyli 'world'
-
+        System.out.println("[SEGMENT-8-OK]");
         /**
          * Sprawdzmy czy klasa rzeczywiście zachowuje generyczność
          */
@@ -132,7 +133,7 @@ public class Main {
 //            System.out.println("Hierarchia jest chyba, źle zbudowana :(");
 //            return;
 //        }
-
+        System.out.println("[SEGMENT-9-OK]");
         /**
          * Super!
          * Pewnie sam nie wierzyłeś, że dojdziesz aż tutaj.
@@ -153,7 +154,7 @@ public class Main {
 //            System.out.println("Chyba nie znalazł dobrego elementu :(");
 //            return;
 //        }
-
+        System.out.println("[SEGMENT-10-OK]");
         /**
          * Sprawdźmy jeszcze generyczność
          */
@@ -167,6 +168,7 @@ public class Main {
 //        }
 //
 //        System.out.println("Udało się !! Wszystko działa :)");
+        System.out.println("[SEGMENT-11-OK]");
     }
 }
 
